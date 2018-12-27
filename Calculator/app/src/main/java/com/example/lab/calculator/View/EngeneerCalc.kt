@@ -72,7 +72,7 @@ class EngeneerCalc : AppCompatActivity(), View.OnClickListener {
         historyButton = findViewById(R.id.im1)
         keyBoard = findViewById(R.id.keyBoard)
 
-
+        //Настраиваем меню
         val myMeny = PopupMenu(this, findViewById(R.id.menuIcon))
         myMeny.menu.add(0, 0, 0, "Стандартный вид")
         myMeny.menu.add(0, 1, 0, "Конвертер")
@@ -90,6 +90,24 @@ class EngeneerCalc : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+        if(myViewModel.getHistoryShown().value!!){
+            myViewModel.changeHistoryShown()
+            openHistory()
+        }
+        super.onRestoreInstanceState(savedInstanceState)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+
+        if(myViewModel.getHistoryShown().value!!){
+            closeFragment(null)
+            myViewModel.changeHistoryShown()
+        }
+
+        super.onSaveInstanceState(outState)
+    }
+
     //при нажатии на кнопку истории
     fun openHistory(){
        if(myViewModel.getHistoryShown().value!!){ //повторное нажатие на иконку истории закроет историю
@@ -105,7 +123,7 @@ class EngeneerCalc : AppCompatActivity(), View.OnClickListener {
        }
     }
 
-
+    //при закрытии окна истории
     fun closeFragment(v: View?){
         myViewModel.changeHistoryShown()
         changeEnable(keyBoard, true)
@@ -152,11 +170,12 @@ class EngeneerCalc : AppCompatActivity(), View.OnClickListener {
     }
 
 
-
+    //обновление поля выражения при нажатии на любую клавишу
     fun refreshExpression(str: String){
         expressionText.text = str
     }
 
+    //обновление поля результата при нажатии на клавишу =
     fun refreshResult(str: String){
         resultText.text = str
     }

@@ -2,7 +2,6 @@ package com.example.lab.calculator.View
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -68,6 +67,7 @@ class StandartCalc : AppCompatActivity(), View.OnClickListener {
         historyButton = findViewById(R.id.im1)
         keyBoard = findViewById(R.id.keyBoard)
 
+        //Настраиваем меню
         val menu = PopupMenu(this, findViewById(R.id.menuIcon))
         menu.menu.add(0, 0, 0, "Инженерный вид")
         menu.menu.add(0, 1, 0, "Конвертер")
@@ -85,11 +85,26 @@ class StandartCalc : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+        if(myViewModel.getHistoryShown().value!!){
+            myViewModel.changeHistoryShown()
+            openHistory()
+        }
+        super.onRestoreInstanceState(savedInstanceState)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+
+        if(myViewModel.getHistoryShown().value!!){
+            closeFragment(null)
+            myViewModel.changeHistoryShown()
+        }
+
+        super.onSaveInstanceState(outState)
+    }
+
     //при нажатии на кнопку истории
     fun openHistory(){
-        val his = myViewModel.getHistory().value
-        Log.d("MyLog", "${his}")
-
         if(myViewModel.getHistoryShown().value!!){ //повторное нажатие на иконку истории закроет историю
             closeFragment(null)
         }else{
@@ -103,6 +118,14 @@ class StandartCalc : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    //при закрытии окна истории
+    fun closeFragment(v: View?){
+        myViewModel.changeHistoryShown()
+        changeEnable(keyBoard, true)
+        historyButton.setBackgroundColor(0x000000)
+        historyButton.setImageResource(R.drawable.history_grey)
+        supportFragmentManager.beginTransaction().remove(fragment).commit()
+    }
 
     //при нажатии на иконку настроек
     fun goToSettings(v: View?){
@@ -140,18 +163,12 @@ class StandartCalc : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    fun closeFragment(v: View?){
-        myViewModel.changeHistoryShown()
-        changeEnable(keyBoard, true)
-        historyButton.setBackgroundColor(0x000000)
-        historyButton.setImageResource(R.drawable.history_grey)
-        supportFragmentManager.beginTransaction().remove(fragment).commit()
-    }
-
+    //обновление поля выражения при нажатии на любую клавишу
     fun refreshExpression(str: String){
         expressionText.text = str
     }
 
+    //обновление поля результата при нажатии на клавишу =
     fun refreshResult(str: String){
         resultText.text = str
     }

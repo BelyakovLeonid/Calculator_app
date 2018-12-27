@@ -185,6 +185,7 @@ class CalcViewModel: ViewModel() {
 
     }
 
+    //добавление экспоненты
     fun addExp(){
         var text = expression.value!!
         val ch = text.last()
@@ -193,14 +194,14 @@ class CalcViewModel: ViewModel() {
            text = "exp"
         }else{
             if(ch == '(' || ch == ' '){
-                text = text + " exp"
+                text = text + "exp"
             }
         }
 
         expression.value = text
     }
 
-
+    //добавление числа пи
     fun addPi(){
         var text = expression.value!!
         val ch = text.last()
@@ -209,7 +210,7 @@ class CalcViewModel: ViewModel() {
             text = "pi"
         }else{
             if(ch == '(' || ch == ' '){
-                text = text + " pi"
+                text = text + "pi"
             }
         }
 
